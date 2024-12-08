@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成AIデモ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        textarea, input, button {
+            margin-top: 10px;
+            display: block;
+            width: 100%;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>生成AIデモ</h1>
+    <label for="userInput">入力してください:</label>
+    <textarea id="userInput" rows="4"></textarea>
+    <button id="generateBtn">生成</button>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('generateBtn').addEventListener('click', async () => {
+            const userInput = document.getElementById('userInput').value;
+            const resultDiv = document.getElementById('result');
+
+            if (!userInput) {
+                resultDiv.textContent = '入力をしてください。';
+                return;
+            }
+
+            resultDiv.textContent = '生成中...';
+
+            try {
+                const response = await fetch('http://localhost:5000/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ input: userInput })
+                });
+                const data = await response.json();
+                resultDiv.textContent = data.result || 'エラーが発生しました。';
+            } catch (error) {
+                resultDiv.textContent = '通信エラーが発生しました。';
+            }
+        });
+    </script>
+</body>
+</html>
